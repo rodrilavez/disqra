@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DISQRA - Artist Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-tertiary: #e8e8e8;
+            --text-primary: #000000;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --accent-color: #000000;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-tertiary: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #999999;
+            --border-color: #333333;
+            --accent-color: #ffffff;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--text-primary);
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: var(--bg-primary);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            height: 50px;
+            filter: var(--logo-filter, none);
+        }
+
+        [data-theme="dark"] .logo {
+            --logo-filter: invert(1);
+        }
+
+        nav {
+            display: flex;
+            gap: 40px;
+            margin-right: 120px;
+        }
+
+        nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--text-secondary);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)),
+                        url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1600') center/cover;
+            margin-top: 90px;
+            transition: background 0.3s;
+        }
+
+        [data-theme="dark"] .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                        url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1600') center/cover;
+        }
+
+        .hero h1 {
+            font-size: 60px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .hero p {
+            font-size: 18px;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+        }
+
+        /* Sections */
+        section {
+            padding: 100px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 300;
+            color: var(--text-primary);
+        }
+
+        /* Artists Section */
+        .artist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .artist-card {
+            background-color: var(--bg-tertiary);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s, border-color 0.3s, background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .artist-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--text-secondary);
+        }
+
+        .artist-card h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-primary);
+        }
+
+        .artist-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* About Section */
+        #about {
+            background-color: var(--bg-secondary);
+            transition: background-color 0.3s;
+        }
+
+        #about p {
+            font-size: 16px;
+            line-height: 2;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        /* Partners Section */
+        #socios {
+            background-color: var(--bg-primary);
+        }
+
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .partner-card {
+            background-color: var(--bg-tertiary);
+            padding: 40px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .partner-card:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .partner-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            color: var(--text-primary);
+        }
+
+        .partner-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Contact Section */
+        #contacto {
+            background-color: var(--bg-secondary);
+            transition: background-color 0.3s;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .contact-item h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-primary);
+        }
+
+        .contact-item p, .contact-item a {
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-decoration: none;
+            line-height: 1.8;
+        }
+
+        .contact-item a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-primary);
+            padding: 30px 50px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav {
+                gap: 20px;
+                font-size: 12px;
+                margin-right: 0;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            section {
+                padding: 60px 20px;
+            }
+
+            h2 {
+                font-size: 28px;
+            }
+        }
+
+        /* Detect system theme preference */
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme]) {
+                --bg-primary: #000000;
+                --bg-secondary: #0a0a0a;
+                --bg-tertiary: #111111;
+                --text-primary: #ffffff;
+                --text-secondary: #999999;
+                --border-color: #333333;
+                --accent-color: #ffffff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle">
+        <span id="themeIcon">🌙</span>
+    </button>
+
+    <!-- Header -->
+    <header>
+        <img src="disqra-logo.png" alt="DISQRA Logo" class="logo">
+        <nav>
+            <a href="#artistas">Artistas</a>
+            <a href="#socios">Socios</a>
+            <a href="#about">About</a>
+            <a href="#contacto">Contacto</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div>
+            <h1>DISQRA</h1>
+            <p>Protegiendo artistas en el camino hacia la libertad creativa</p>
+        </div>
+    </div>
+
+    <!-- Artists Section -->
+    <section id="artistas">
+        <h2>Nuestro Artista</h2>
+        <div class="artist-grid">
+            <div class="artist-card">
+                <h3>Vacíos Cuerpos</h3>
+                <p>Un proyecto musical innovador que fusiona sonidos experimentales con narrativas profundas. Vacíos Cuerpos representa la vanguardia de la escena musical en Querétaro, desafiando constantemente los límites convencionales del arte sonoro.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Section -->
+    <section id="socios">
+        <h2>Nuestros Socios</h2>
+        <div class="partners-grid">
+            <div class="partner-card">
+                <h3>Producción</h3>
+                <p>Colaboramos con los mejores estudios y productores de Querétaro y México</p>
+            </div>
+            <div class="partner-card">
+                <h3>Distribución</h3>
+                <p>Red de distribución nacional e internacional para maximizar el alcance</p>
+            </div>
+            <div class="partner-card">
+                <h3>Medios</h3>
+                <p>Relaciones estratégicas con medios especializados en música independiente</p>
+            </div>
+            <div class="partner-card">
+                <h3>Venues</h3>
+                <p>Conexiones con los mejores espacios para presentaciones en vivo</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <h2>Sobre DISQRA</h2>
+        <p>
+            DISQRA es una compañía boutique de management de artistas con sede en Querétaro, México. Con un enfoque personalizado y de servicio completo, DISQRA supervisa y asiste en todos los elementos asociados con la dirección creativa, estrategia de giras y logística, producción, publicación, contratos discográficos y más, con el apoyo de algunos de los expertos más respetados en la industria.
+        </p>
+        <p>
+            Aunque tenemos nuestra base en Querétaro, DISQRA se enorgullece de sus relaciones globales y pone énfasis en construir artistas que tengan un negocio sostenible a nivel mundial. En una industria vertiginosa y en constante evolución, DISQRA prospera al encontrar las formas más auténticas, únicas y estratégicas de construir carreras de artistas que continúan empujando límites sin permitir que el éxito comercial nuble el espíritu que los estableció.
+        </p>
+        <p>
+            No tomamos a la ligera la oportunidad de trabajar con nuestros artistas y estamos orgullosos de colaborar con los mejores y más brillantes actos en la música actual.
+        </p>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto">
+        <h2>Contacto</h2>
+        <div class="contact-info">
+            <div class="contact-item">
+                <h3>General</h3>
+                <p><a href="mailto:info@disqra.com">info@disqra.com</a></p>
+            </div>
+            <div class="contact-item">
+                <h3>Management</h3>
+                <p><a href="mailto:management@disqra.com">management@disqra.com</a></p>
+            </div>
+            <div class="contact-item">
+                <h3>Ubicación</h3>
+                <p>Querétaro, México</p>
+            </div>
+            <div class="contact-item">
+                <h3>Redes Sociales</h3>
+                <p>
+                    <a href="#" style="display: block;">Instagram</a>
+                    <a href="#" style="display: block;">Facebook</a>
+                    <a href="#" style="display: block;">Twitter</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 DISQRA. Todos los derechos reservados. Querétaro, México.</p>
+    </footer>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or default to system preference
+        function getInitialTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                return savedTheme;
+            }
+            // Check system preference
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                return 'dark';
+            }
+            return 'light';
+        }
+
+        // Apply theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                html.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+            } else {
+                html.setAttribute('data-theme', 'light');
+                themeIcon.textContent = '🌙';
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        // Initialize theme
+        setTheme(getInitialTheme());
+
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
